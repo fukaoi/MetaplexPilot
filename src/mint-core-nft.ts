@@ -4,7 +4,7 @@ import {
   generateSigner,
   keypairIdentity,
 } from "@metaplex-foundation/umi";
-import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+import { filebaseUploader } from "./filebase-uploader.js";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import bs from "bs58";
 import fs from "node:fs";
@@ -12,21 +12,18 @@ import path from "node:path";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import dotenv from "dotenv";
 
-console.log("# start core nft minting...");
-
-(async () => {
+export const mintCoreNft = async () => {
   dotenv.config();
-  const umi = createUmi(process.env.RPC_URLj)
+  const umi = createUmi(process.env.RPC_URL)
     .use(mplCore())
     .use(
-      irysUploader({
-        address: "https://devnet.irys.xyz",
+      filebaseUploader({
+        gateway: "https://ipfs.filebase.io/ipfs",
       }),
     );
 
   const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
   const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
-  console.log("# owner: ", owner);
   umi.use(keypairIdentity(owner));
 
   const imageBuffer = fs.readFileSync(
@@ -36,10 +33,6 @@ console.log("# start core nft minting...");
   const imageFile = createGenericFile(imageBuffer, "nfc.png");
   const [imageUri] = await umi.uploader.upload([imageFile]);
 
-  // const imageUri = "";
-  console.log("# image url:", imageUri);
-
-  // Upload metadata JSON
   const metadata = {
     name: "Number #0001",
     description:
@@ -56,16 +49,11 @@ console.log("# start core nft minting...");
     },
   };
   const metadataUri = await umi.uploader.uploadJson(metadata);
-  console.log("# upload metadata url:", metadataUri);
-
-  // Mint core nft
   const asset = generateSigner(umi);
-  console.log("# Creating Core NFT...");
   const tx = await create(umi, {
     asset,
     name: "Core NFT",
     uri: metadataUri,
   }).sendAndConfirm(umi);
-  const sig = base58.deserialize(tx.signature)[0];
-  console.log("# tx sig: ", sig);
-})();
+  return base58.deserialize(tx.signature)[0];
+};

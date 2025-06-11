@@ -26,7 +26,22 @@ describe("createTree", () => {
     );
   });
 
-  it("should mint cNFT", async () => {
+  it("should mint bubblegum nft", async () => {
+    const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
+    const metadata = {
+      name: "Coupon3",
+      symbol: "CouponNFT3",
+      uri: "https://ipfs.filebase.io/ipfs/QmexzhzMDpFTZhHeaWG12QchvBUCYz9hGxu6Xb1rNy72FK",
+      sellerFeeBasisPoints: 0,
+      collection: "", // todo
+      creators: [],
+    };
+    const response = await mintBubblegumNft({ treeId, metadata });
+    expect(response).toBeDefined();
+    console.log("# assetId: ", response.id);
+  });
+
+  it("should mint core nft", async () => {
     const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
     const metadata = {
       name: "Coupon3",

@@ -5,6 +5,7 @@ import {
 import { keypairIdentity, none, publicKey } from "@metaplex-foundation/umi";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+import { filebaseUploader } from "./filebase-uploader.js";
 import bs from "bs58";
 import dotenv from "dotenv";
 
@@ -19,11 +20,17 @@ export const mintBubblegumNft = async ({
     uri: string;
     sellerFeeBasisPoints: number;
     collection: any;
-    creators?: any[];
+    creators: any[];
   };
 }) => {
   dotenv.config();
-  const umi = createUmi(process.env.RPC_URL).use(mplCore());
+  const umi = createUmi(process.env.RPC_URL)
+    .use(mplCore())
+    .use(
+      filebaseUploader({
+        gateway: "https://ipfs.filebase.io/ipfs",
+      })
+    );
   const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
   const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
   umi.use(keypairIdentity(owner));
