@@ -2,7 +2,7 @@ import {
   mintV2,
   parseLeafFromMintV2Transaction,
 } from "@metaplex-foundation/mpl-bubblegum";
-import { keypairIdentity, none, publicKey } from "@metaplex-foundation/umi";
+import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { filebaseUploader } from "./filebase-uploader.js";
@@ -29,7 +29,7 @@ export const mintBubblegumNft = async ({
     .use(
       filebaseUploader({
         gateway: "https://ipfs.filebase.io/ipfs",
-      })
+      }),
     );
   const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
   const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
