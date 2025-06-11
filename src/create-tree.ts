@@ -4,8 +4,13 @@ import bs from "bs58";
 import { createTreeV2 } from "@metaplex-foundation/mpl-bubblegum";
 import dotenv from "dotenv";
 
-(async () => {
-  console.log("# start merkelTree...");
+export const createTree = async ({
+  maxBufferSize,
+  maxDepth,
+}: {
+  maxBufferSize: number;
+  maxDepth: number;
+}) => {
   dotenv.config();
   const umi = createUmi(process.env.RPC_URL);
   const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
@@ -14,10 +19,9 @@ import dotenv from "dotenv";
   const merkleTree = generateSigner(umi);
   const builder = await createTreeV2(umi, {
     merkleTree,
-    maxBufferSize: 64,
-    maxDepth: 14,
+    maxBufferSize,
+    maxDepth,
   });
 
-  await builder.sendAndConfirm(umi);
-  console.log("# created merkleTree: ", merkleTree);
-})();
+  return await builder.sendAndConfirm(umi);
+};

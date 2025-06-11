@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node"],
+    "types": ["jest", "node"],
     "resolveJsonModule": true
-  }
+  },
+  "include": ["src", "__tests__"]
 }

@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "@metaplex-foundation/mpl-bubblegum": "^5.0.1",
     "@metaplex-foundation/mpl-core": "^1.4.0",
@@ -21,11 +24,21 @@
       "keccak",
       "protobufjs",
       "secp256k1",
+      "unrs-resolver",
       "utf-8-validate"
+    ],
+    "ignoredBuiltDependencies": [
+      "unrs-resolver"
     ]
   },
   "devDependencies": {
+    "@jest/globals": "^30.0.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.15.24",
-    "tsx": "^4.19.4"
+    "jest": "^30.0.0",
+    "ts-jest": "^29.3.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }
