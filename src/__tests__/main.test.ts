@@ -2,6 +2,7 @@ import { createTree } from "../create-tree";
 import bs from "bs58";
 import { expect, describe } from "@jest/globals";
 import { fetchAssets } from "../fetch-assets";
+import { mintBubblegumNft } from "../mint-bubblegum-nft";
 
 describe("createTree", () => {
   it("should create a merkle tree", async () => {
@@ -23,5 +24,20 @@ describe("createTree", () => {
       "# metadata: ",
       response.map((data: any) => data.content.metadata),
     );
+  });
+
+  it("should mint cNFT", async () => {
+    const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
+    const metadata = {
+      name: "Coupon3",
+      symbol: "CouponNFT3",
+      uri: "https://ipfs.filebase.io/ipfs/QmexzhzMDpFTZhHeaWG12QchvBUCYz9hGxu6Xb1rNy72FK",
+      sellerFeeBasisPoints: 0,
+      collection: "", // todo
+      creators: [],
+    };
+    const response = await mintBubblegumNft({ treeId, metadata });
+    expect(response).toBeDefined();
+    console.log("# assetId: ", response.id);
   });
 });
