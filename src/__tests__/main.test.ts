@@ -3,6 +3,7 @@ import bs from "bs58";
 import { expect, describe } from "@jest/globals";
 import { fetchAssets } from "../fetch-assets";
 import { mintBubblegumNft } from "../mint-bubblegum-nft";
+import { filebaseUploader } from "../filebase-uploader";
 
 describe("createTree", () => {
   it("should create a merkle tree", async () => {
@@ -10,6 +11,11 @@ describe("createTree", () => {
     const merkleTree = await createTree({ maxDepth: 3, maxBufferSize: 8 });
     expect(merkleTree).toBeDefined();
     console.log("# sig: ", bs.encode(merkleTree.signature));
+  });
+
+  it("load filebaseUploader", async () => {
+    const response = filebaseUploader();
+    expect(response).toBeDefined();
   });
 
   it("fetch asset datas", async () => {
