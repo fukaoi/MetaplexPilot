@@ -5,7 +5,7 @@ import {
 import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { filebaseUploader } from "./filebase-uploader.js";
+import { filebaseUploader } from "./filebase-uploader";
 import bs from "bs58";
 import dotenv from "dotenv";
 
@@ -23,6 +23,11 @@ export const mintBubblegumNft = async ({
     creators: any[];
   };
 }) => {
+  console.log("treeId:", treeId, treeId.length);
+  console.log(
+    "metadata creators:",
+    metadata.creators?.map((c) => c.address),
+  );
   dotenv.config();
   const umi = createUmi(process.env.RPC_URL)
     .use(mplCore())

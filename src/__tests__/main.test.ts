@@ -33,7 +33,7 @@ describe("createTree", () => {
       symbol: "CouponNFT3",
       uri: "https://ipfs.filebase.io/ipfs/QmexzhzMDpFTZhHeaWG12QchvBUCYz9hGxu6Xb1rNy72FK",
       sellerFeeBasisPoints: 0,
-      collection: "", // todo
+      collection: "8rDXuza4QhaA7mG5nDyx3kBKUbwdcDr3MKqTcZL7fuvK",
       creators: [],
     };
     const response = await mintBubblegumNft({ treeId, metadata });
