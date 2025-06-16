@@ -5,6 +5,5 @@ describe("filebaseUploader", () => {
   it("load filebaseUploader", async () => {
     const response = filebaseUploader();
     expect(response).toBeDefined();
-    console.log("# response: ", response);
   });
 });

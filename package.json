@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
     "@metaplex-foundation/mpl-bubblegum": "^5.0.1",

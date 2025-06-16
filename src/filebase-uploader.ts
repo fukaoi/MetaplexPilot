@@ -1,9 +1,5 @@
 import { create } from "kubo-rpc-client";
-import { 
-  UmiPlugin,
-  createGenericFile,
-  Umi,
-} from "@metaplex-foundation/umi";
+import { UmiPlugin, createGenericFile, Umi } from "@metaplex-foundation/umi";
 import { Buffer } from "buffer";
 import dotenv from "dotenv";
 
@@ -16,7 +12,7 @@ export type FilebaseUploaderOptions = {
 };
 
 export const filebaseUploader = (
-  options: FilebaseUploaderOptions = {}
+  options: FilebaseUploaderOptions = {},
 ): UmiPlugin => ({
   install(umi: Umi) {
     const filebaseClient = createFilebaseClient(options);
@@ -40,7 +36,7 @@ function createFilebaseClient(options: FilebaseUploaderOptions): any {
 
 function createFilebaseUploader(
   client: any,
-  options: FilebaseUploaderOptions
+  options: FilebaseUploaderOptions,
 ): any {
   const gateway = options.gateway || "https://ipfs.filebase.io/ipfs";
 
@@ -75,7 +71,11 @@ function createFilebaseUploader(
       const file = metadata.image;
       const [uri] = await upload([file]);
       metadata.image = uri;
-      if (metadata.properties && metadata.properties.files && metadata.properties.files[0]) {
+      if (
+        metadata.properties &&
+        metadata.properties.files &&
+        metadata.properties.files[0]
+      ) {
         metadata.properties.files[0].uri = uri;
       }
     }
@@ -84,7 +84,7 @@ function createFilebaseUploader(
 
   const getUploadPrice = async () => {
     // For Filebase, we don't need to calculate a price as it's based on subscription
-    return { basisPoints: BigInt(0), identifier: 'SOL' };
+    return { basisPoints: BigInt(0), identifier: "SOL" };
   };
 
   return { upload, uploadJson, uploadMetadata, getUploadPrice };
