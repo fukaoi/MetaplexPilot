@@ -16,21 +16,6 @@
     "install": "^0.13.0",
     "kubo-rpc-client": "^5.1.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "bigint-buffer",
-      "bufferutil",
-      "esbuild",
-      "keccak",
-      "protobufjs",
-      "secp256k1",
-      "unrs-resolver",
-      "utf-8-validate"
-    ],
-    "ignoredBuiltDependencies": [
-      "unrs-resolver"
-    ]
-  },
   "devDependencies": {
     "@jest/globals": "^30.0.0",
     "@types/jest": "^29.5.14",
