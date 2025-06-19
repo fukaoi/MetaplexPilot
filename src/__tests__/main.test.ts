@@ -44,7 +44,7 @@ describe("createTree", () => {
     const collection = "8rDXuza4QhaA7mG5nDyx3kBKUbwdcDr3MKqTcZL7fuvK";
     const response = await mintBubblegumNft({ treeId, collection, metadata });
     expect(response).toBeDefined();
-    console.log("# assetId: ", response.id);
+    console.log("# assetId: ", response);
   });
 
   // it("should mint core nft", async () => {
