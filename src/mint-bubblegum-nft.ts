@@ -4,10 +4,6 @@ import {
 } from "@metaplex-foundation/mpl-bubblegum";
 import { PublicKey } from "@solana/web3.js";
 import {
-  ConcurrentMerkleTreeAccount,
-  SPL_ACCOUNT_COMPRESSION_PROGRAM_ID,
-} from "@solana/spl-account-compression";
-import {
   Umi,
   assertAccountExists,
   deserializeAccount,
@@ -23,32 +19,6 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { filebaseUploader } from "./filebase-uploader";
 import bs from "bs58";
 import dotenv from "dotenv";
-import { BN } from "bn.js";
-
-export function getLeafAssetId(tree: string, leafIndex: number): PublicKey {
-  const idxLE8 = (
-    BN.isBN(leafIndex) ? leafIndex : new BN(leafIndex)
-  ).toArrayLike(Buffer, "le", 8);
-
-  const [assetPk] = PublicKey.findProgramAddressSync(
-    [new PublicKey(tree).toBuffer(), idxLE8],
-    SPL_ACCOUNT_COMPRESSION_PROGRAM_ID,
-  );
-
-  return assetPk;
-}
-
-async function getNextLeafIndex(umi: Umi, treePk: string): Promise<number> {
-  const raw = await umi.rpc.getAccount(publicKey(treePk));
-  assertAccountExists(raw);
-  const { data: tree } = deserializeAccount(
-    raw,
-    ConcurrentMerkleTreeAccountData,
-  ) as Account<ConcurrentMerkleTreeAccountData>;
-
-  // ❷ SDK v5 以降はメソッドが用意されている
-  return Number(tree.getNumMinted());
-}
 
 export const mintBubblegumNft = async ({
   treeId,
@@ -81,10 +51,8 @@ export const mintBubblegumNft = async ({
 
   // const v2Metadata = { ...metadata, collection: v2Collection };
   const v2Metadata = { ...metadata, collection: null };
-  const nextIdx = await getNextLeafIndex(umi, treeId);
-  console.log("asset id: ", nextIdx);
 
-  // const CU_LIMIT = 200_000;
+  // onst CU_LIMIT = 200_000;
   // const PRIO_FEE = await umi.rpc.getPriorityFeeEstimate();
 
   // const tx = transactionBuilder()
@@ -98,10 +66,7 @@ export const mintBubblegumNft = async ({
     metadata: v2Metadata,
   }).sendAndConfirm(umi, {
     send: { skipPreflight: true, maxRetries: 3 },
-    // confirm: { commitment: "finalized" },
+    confirm: { commitment: "finalized" },
   });
-  const assetId = getLeafAssetId(treeId, nextIdx);
-  console.log(nextIdx, assetId.toString());
-  return assetId.toString();
-  // return await parseLeafFromMintV2Transaction(umi, signature);
+  return await parseLeafFromMintV2Transaction(umi, signature);
 };
