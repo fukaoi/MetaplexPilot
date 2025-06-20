@@ -25,20 +25,23 @@ export const mintBubblegumNft = async ({
   treeId,
   collection,
   filePath,
-  metadata,
-  attributes,
+  onChainMetadata,
+  offChainMetadata,
 }: {
   treeId: string;
   collection: string;
   filePath: string;
-  metadata: {
+  onChainMetadata: {
     name: string;
     symbol: string;
-    uri: string;
     sellerFeeBasisPoints: number;
     creators: any[];
   };
-  attributes?: any[];
+  offChainMetadata?: {
+    description: string;
+    attributes?: any[];
+    properties?: any[];
+  };
 }) => {
   dotenv.config();
   const umi = createUmi(process.env.RPC_URL)
@@ -60,22 +63,21 @@ export const mintBubblegumNft = async ({
 
   const [imageUrl] = await umi.uploader.upload([fileToUpload]);
   const jsonMetadata = {
-    name: metadata.name,
-    symbol: metadata.symbol,
-    description: metadata.symbol,
+    name: onChainMetadata.name,
+    symbol: onChainMetadata.symbol,
+    description: offChainMetadata.description,
     image: imageUrl,
-    attributes: attributes || [],
-    seller_fee_basis_points: metadata.sellerFeeBasisPoints,
+    attributes: offChainMetadata.attributes || [],
+    properties: offChainMetadata.properties || [],
+    seller_fee_basis_points: onChainMetadata.sellerFeeBasisPoints,
   };
   const jsonUrl = await umi.uploader.uploadJson(jsonMetadata);
-  console.log(jsonUrl);
-  metadata.uri = jsonUrl;
 
   const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
   const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
   umi.use(keypairIdentity(owner));
 
-  const v2Metadata = { ...metadata, collection: null };
+  const v2Metadata = { ...onChainMetadata, collection: null, uri: jsonUrl };
 
   const tx = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: CU_LIMIT }))

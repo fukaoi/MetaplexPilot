@@ -12,7 +12,26 @@ import path from "node:path";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import dotenv from "dotenv";
 
-export const mintCoreNft = async () => {
+export const mintCoreNft = async ({
+  collection,
+  filePath,
+  onChainMetadata,
+  offChainMetadata,
+}: {
+  collection: string;
+  filePath: string;
+  onChainMetadata: {
+    name: string;
+    symbol: string;
+    sellerFeeBasisPoints: number;
+    creators: any[];
+  };
+  offChainMetadata?: {
+    description: string;
+    attributes?: any[];
+    properties?: any[];
+  };
+}) => {
   dotenv.config();
   const umi = createUmi(process.env.RPC_URL)
     .use(mplCore())
@@ -33,20 +52,7 @@ export const mintCoreNft = async () => {
   const imageFile = createGenericFile(imageBuffer, "nfc.png");
   const [imageUri] = await umi.uploader.upload([imageFile]);
 
-  const metadata = {
-    name: "Number #0001",
-    description:
-      "Collection of 10 numbers on the blockchain. This is the number 1/10.",
-    image: imageUri,
-    external_url: "https://example.com",
-    jues: [
-      { trait_type: "rarity", value: "common" },
-      { trait_type: "series", value: "1" },
-    ],
-    properties: {
-      files: [{ uri: imageUri, type: "image/png" }],
-      category: "image",
-    },
+,
   };
   const metadataUri = await umi.uploader.uploadJson(metadata);
   const asset = generateSigner(umi);

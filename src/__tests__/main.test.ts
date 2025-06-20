@@ -35,32 +35,35 @@ describe("createTree", () => {
   it("should mint bubblegum nft", async () => {
     const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
     const filePath = "./assets/hokke.jpeg";
-    const metadata = {
+    const onChainMetadata = {
       name: "CouponNFT",
       symbol: "CPN",
       uri: "",
       sellerFeeBasisPoints: 0,
       creators: [],
     };
-    const attributes = [
-      {
-        trait_type: "Color",
-        value: "Clear Yellow",
-      },
-      {
-        trait_type: "Eye",
-        value: "Orange",
-      },
-      { trait_type: "Sticker", value: "Galaxy Blue" },
-    ];
+    const offChainMetadata = {
+      description: "This is a coupon NFT",
+      attributes: [
+        {
+          trait_type: "Color",
+          value: "Clear Yellow",
+        },
+        {
+          trait_type: "Eye",
+          value: "Orange",
+        },
+        { trait_type: "Sticker", value: "Galaxy Blue" },
+      ],
+    };
 
     const collection = "8rDXuza4QhaA7mG5nDyx3kBKUbwdcDr3MKqTcZL7fuvK";
     const response = await mintBubblegumNft({
       treeId,
       filePath,
       collection,
-      metadata,
-      attributes,
+      onChainMetadata: onChainMetadata,
+      offChainMetadata,
     });
     expect(response).toBeDefined();
     console.log("# assetId: ", response);
@@ -76,6 +79,20 @@ describe("createTree", () => {
   //     collection: "", // todo
   //     creators: [],
   //   };
+  //   properties: {
+  //   files: [{ uri: imageUri, type: "image/png" }],
+  //   category: "image",
+  // }
+  //   const metadata = {
+  //       name: "Number #0001",
+  //       description:
+  //         "Collection of 10 numbers on the blockchain. This is the number 1/10.",
+  //       image: imageUri,
+  //       external_url: "https://example.com",
+  //       jues: [
+  //         { trait_type: "rarity", value: "common" },
+  //         { trait_type: "series", value: "1" },
+  //       ],
   //   const response = await mintBubblegumNft({ treeId, metadata });
   //   expect(response).toBeDefined();
   //   console.log("# assetId: ", response.id);
