@@ -42,7 +42,7 @@ export async function parseLeafFromMintV2ConfirmedTransaction(
     throw new Error("Could not get transaction from signature");
   }
 
-  const instruction = transaction.message.instructions[0];
+  const instruction = transaction.message.instructions[2];
   const collectionIndex = instruction.accountIndexes[7];
   const collection = transaction.message.accounts[collectionIndex];
 

@@ -35,8 +35,8 @@ describe("createTree", () => {
   it("should mint bubblegum nft", async () => {
     const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
     const metadata = {
-      name: "Coupon3",
-      symbol: "CNFT3",
+      name: "Coupon",
+      symbol: "CNFT",
       uri: "https://ipfs.filebase.io/ipfs/QmexzhzMDpFTZhHeaWG12QchvBUCYz9hGxu6Xb1rNy72FK",
       sellerFeeBasisPoints: 0,
       creators: [],

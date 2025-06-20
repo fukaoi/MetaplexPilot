@@ -20,6 +20,9 @@ importers:
       '@metaplex-foundation/mpl-token-metadata':
         specifier: ^3.4.0
         version: 3.4.0(@metaplex-foundation/umi@1.2.0)
+      '@metaplex-foundation/mpl-toolbox':
+        specifier: ^0.10.0
+        version: 0.10.0(@metaplex-foundation/umi@1.2.0)
       '@metaplex-foundation/umi':
         specifier: ^1.2.0
         version: 1.2.0
