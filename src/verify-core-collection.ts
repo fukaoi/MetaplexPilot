@@ -8,7 +8,7 @@ import dotenv from "dotenv";
   const umi = createUmi(process.env.RPC_URL).use(mplCore());
 
   const collectionPk = publicKey(
-    "7XEYbxe1g7PctWozFfHKkWMQn3jMg3KUip4kTZsmAtaM",
+    "8Wf4oHjf1CV1UBzFsJ6F9ETqRmx4WAqJzariyAAVxX9h",
   );
   const col = await fetchCollection(umi, collectionPk);
 

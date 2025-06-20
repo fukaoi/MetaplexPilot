@@ -4,6 +4,8 @@ import { expect, describe } from "@jest/globals";
 import { fetchAssets } from "../fetch-assets";
 import { mintBubblegumNft } from "../mint-bubblegum-nft";
 import { filebaseUploader } from "../filebase-uploader";
+import { mintCoreCollection } from "../mint-core-collection";
+import { amountToNumber } from "@metaplex-foundation/umi";
 
 describe("createTree", () => {
   it("should create a merkle tree", async () => {
@@ -69,32 +71,25 @@ describe("createTree", () => {
     console.log("# assetId: ", response);
   });
 
-  // it("should mint core nft", async () => {
-  //   const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
-  //   const metadata = {
-  //     name: "Coupon3",
-  //     symbol: "CouponNFT3",
-  //     uri: "https://ipfs.filebase.io/ipfs/QmexzhzMDpFTZhHeaWG12QchvBUCYz9hGxu6Xb1rNy72FK",
-  //     sellerFeeBasisPoints: 0,
-  //     collection: "", // todo
-  //     creators: [],
-  //   };
-  //   properties: {
-  //   files: [{ uri: imageUri, type: "image/png" }],
-  //   category: "image",
-  // }
-  //   const metadata = {
-  //       name: "Number #0001",
-  //       description:
-  //         "Collection of 10 numbers on the blockchain. This is the number 1/10.",
-  //       image: imageUri,
-  //       external_url: "https://example.com",
-  //       jues: [
-  //         { trait_type: "rarity", value: "common" },
-  //         { trait_type: "series", value: "1" },
-  //       ],
-  //   const response = await mintBubblegumNft({ treeId, metadata });
-  //   expect(response).toBeDefined();
-  //   console.log("# assetId: ", response.id);
-  // });
+  it("should mint core collection", async () => {
+    const filePath = "./assets/coupon.png";
+    const onChainMetadata = {
+      name: "Coupon Collection",
+      symbol: "COLL",
+      sellerFeeBasisPoints: 0,
+      creators: [],
+    };
+
+    const offChainMetadata = {
+      description:
+        "Collection of 10 numbers on the blockchain. This is the number 1/10.",
+    };
+    const response = await mintCoreCollection({
+      filePath,
+      onChainMetadata,
+      offChainMetadata,
+    });
+    expect(response).toBeDefined();
+    console.log("# assetId: ", response);
+  });
 });

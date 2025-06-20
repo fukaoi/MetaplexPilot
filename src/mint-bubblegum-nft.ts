@@ -40,7 +40,7 @@ export const mintBubblegumNft = async ({
   offChainMetadata?: {
     description: string;
     attributes?: any[];
-    properties?: any[];
+    properties?: { [key: string]: unknown };
   };
 }) => {
   dotenv.config();
@@ -77,16 +77,22 @@ export const mintBubblegumNft = async ({
   const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
   umi.use(keypairIdentity(owner));
 
-  const v2Metadata = { ...onChainMetadata, collection: null, uri: jsonUrl };
+  // const metadata = { ...onChainMetadata, collection: null, uri: jsonUrl };
+  const metadata = {
+    ...onChainMetadata,
+    collection: publicKey("9ni7R3yeUK9K8WpJcYfgEewYKUCLmGHBXVtkoxnstwQu"),
+    uri: jsonUrl,
+  };
 
   const tx = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: CU_LIMIT }))
     .add(setComputeUnitPrice(umi, { microLamports: PRIO_FEE }))
     .add(
       mintV2(umi, {
+        coreCollection: publicKey("9ni7R3yeUK9K8WpJcYfgEewYKUCLmGHBXVtkoxnstwQu"),
         leafOwner: umi.identity.publicKey,
         merkleTree: publicKey(treeId),
-        metadata: v2Metadata,
+        metadata,
       }),
     );
 
