@@ -80,6 +80,7 @@ export const mintCoreCollection = async ({
         collection,
         name: onChainMetadata.name,
         uri: jsonUrl,
+        plugins: [{ type: "BubblegumV2" }],
       }),
     );
 

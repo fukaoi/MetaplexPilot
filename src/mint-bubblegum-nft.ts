@@ -3,6 +3,7 @@ import {
   createGenericFile,
   keypairIdentity,
   publicKey,
+  some,
   transactionBuilder,
 } from "@metaplex-foundation/umi";
 import { mplCore } from "@metaplex-foundation/mpl-core";
@@ -80,7 +81,7 @@ export const mintBubblegumNft = async ({
   // const metadata = { ...onChainMetadata, collection: null, uri: jsonUrl };
   const metadata = {
     ...onChainMetadata,
-    collection: publicKey("9ni7R3yeUK9K8WpJcYfgEewYKUCLmGHBXVtkoxnstwQu"),
+    collection: some(publicKey("DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY")),
     uri: jsonUrl,
   };
 
@@ -89,7 +90,10 @@ export const mintBubblegumNft = async ({
     .add(setComputeUnitPrice(umi, { microLamports: PRIO_FEE }))
     .add(
       mintV2(umi, {
-        coreCollection: publicKey("9ni7R3yeUK9K8WpJcYfgEewYKUCLmGHBXVtkoxnstwQu"),
+        collectionAuthority: umi.identity,
+        coreCollection: publicKey(
+          "DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY",
+        ),
         leafOwner: umi.identity.publicKey,
         merkleTree: publicKey(treeId),
         metadata,
