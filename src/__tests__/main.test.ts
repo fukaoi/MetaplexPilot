@@ -34,15 +34,34 @@ describe("createTree", () => {
 
   it("should mint bubblegum nft", async () => {
     const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
+    const filePath = "./assets/hokke.jpeg";
     const metadata = {
-      name: "Coupon",
-      symbol: "CNFT",
-      uri: "https://ipfs.filebase.io/ipfs/QmexzhzMDpFTZhHeaWG12QchvBUCYz9hGxu6Xb1rNy72FK",
+      name: "CouponNFT",
+      symbol: "CPN",
+      uri: "",
       sellerFeeBasisPoints: 0,
       creators: [],
     };
+    const attributes = [
+      {
+        trait_type: "Color",
+        value: "Clear Yellow",
+      },
+      {
+        trait_type: "Eye",
+        value: "Orange",
+      },
+      { trait_type: "Sticker", value: "Galaxy Blue" },
+    ];
+
     const collection = "8rDXuza4QhaA7mG5nDyx3kBKUbwdcDr3MKqTcZL7fuvK";
-    const response = await mintBubblegumNft({ treeId, collection, metadata });
+    const response = await mintBubblegumNft({
+      treeId,
+      filePath,
+      collection,
+      metadata,
+      attributes,
+    });
     expect(response).toBeDefined();
     console.log("# assetId: ", response);
   });
