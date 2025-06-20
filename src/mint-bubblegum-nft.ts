@@ -1,28 +1,14 @@
-import {
-  mintV2,
-  parseLeafFromMintV2Transaction,
-} from "@metaplex-foundation/mpl-bubblegum";
-import { PublicKey } from "@solana/web3.js";
-import {
-  Umi,
-  assertAccountExists,
-  deserializeAccount,
-  keypairIdentity,
-  none,
-  publicKey,
-  some,
-  transactionBuilder,
-  Account,
-} from "@metaplex-foundation/umi";
+import { mintV2 } from "@metaplex-foundation/mpl-bubblegum";
+import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { filebaseUploader } from "./filebase-uploader";
 import bs from "bs58";
 import dotenv from "dotenv";
+import { parseLeafFromMintV2ConfirmedTransaction } from "./parseLeafFromMintV2ConfirmedTransaction";
 
 export const mintBubblegumNft = async ({
   treeId,
-  collection,
   metadata,
 }: {
   treeId: string;
@@ -46,7 +32,8 @@ export const mintBubblegumNft = async ({
   const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
   const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
   umi.use(keypairIdentity(owner));
-  const v2Collection = some(publicKey(collection));
+  // Remove the unused v2Collection variable
+  // const v2Collection = some(publicKey(collection));
   // const v2Collection = null;
 
   // const v2Metadata = { ...metadata, collection: v2Collection };
@@ -66,7 +53,11 @@ export const mintBubblegumNft = async ({
     metadata: v2Metadata,
   }).sendAndConfirm(umi, {
     send: { skipPreflight: true, maxRetries: 3 },
-    confirm: { commitment: "finalized" },
+    confirm: { commitment: "confirmed" },
   });
-  return await parseLeafFromMintV2Transaction(umi, signature);
+  const response = await parseLeafFromMintV2ConfirmedTransaction(
+    umi,
+    signature,
+  );
+  return response.id;
 };
