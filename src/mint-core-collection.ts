@@ -1,13 +1,11 @@
-import { mplCore, createCollection } from "@metaplex-foundation/mpl-core";
+import { createCollection } from "@metaplex-foundation/mpl-core";
 import {
   createGenericFile,
   generateSigner,
-  keypairIdentity,
   transactionBuilder,
+  Umi,
 } from "@metaplex-foundation/umi";
 import { filebaseUploader } from "./filebase-uploader";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import bs from "bs58";
 import fs from "node:fs";
 import path from "node:path";
 import { base58 } from "@metaplex-foundation/umi/serializers";
@@ -15,18 +13,18 @@ import {
   setComputeUnitLimit,
   setComputeUnitPrice,
 } from "@metaplex-foundation/mpl-toolbox";
-
 import dotenv from "dotenv";
-import { symlink } from "node:fs/promises";
 
 const CU_LIMIT = 200_000;
 const PRIO_FEE = 1000;
 
 export const mintCoreCollection = async ({
+  umi,
   filePath,
   onChainMetadata,
   offChainMetadata,
 }: {
+  umi: Umi;
   filePath: string;
   onChainMetadata: {
     name: string;
@@ -39,13 +37,11 @@ export const mintCoreCollection = async ({
   };
 }) => {
   dotenv.config();
-  const umi = createUmi(process.env.RPC_URL)
-    .use(mplCore())
-    .use(
-      filebaseUploader({
-        gateway: "https://ipfs.filebase.io/ipfs",
-      }),
-    );
+  umi.use(
+    filebaseUploader({
+      gateway: "https://ipfs.filebase.io/ipfs",
+    }),
+  );
 
   const fileBuffer = fs.readFileSync(filePath);
   const fileName = path.basename(filePath);
@@ -66,10 +62,6 @@ export const mintCoreCollection = async ({
     properties: offChainMetadata.properties || [],
   };
   const jsonUrl = await umi.uploader.uploadJson(jsonMetadata);
-
-  const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
-  const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
-  umi.use(keypairIdentity(owner));
   const collection = generateSigner(umi);
 
   const tx = transactionBuilder()
@@ -84,9 +76,9 @@ export const mintCoreCollection = async ({
       }),
     );
 
-  const { signature } = await tx.sendAndConfirm(umi, {
+  await tx.sendAndConfirm(umi, {
     send: { skipPreflight: true, maxRetries: 3 },
     confirm: { commitment: "confirmed" },
   });
-  return base58.deserialize(signature)[0];
+  return collection.publicKey;
 };

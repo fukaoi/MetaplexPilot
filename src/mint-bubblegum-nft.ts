@@ -1,16 +1,12 @@
 import { mintV2 } from "@metaplex-foundation/mpl-bubblegum";
 import {
   createGenericFile,
-  keypairIdentity,
   publicKey,
   some,
   transactionBuilder,
+  Umi,
 } from "@metaplex-foundation/umi";
-import { mplCore } from "@metaplex-foundation/mpl-core";
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { filebaseUploader } from "./filebase-uploader";
-import bs from "bs58";
-import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { parseLeafFromMintV2ConfirmedTransaction } from "./parseLeafFromMintV2ConfirmedTransaction";
@@ -23,14 +19,16 @@ const CU_LIMIT = 200_000;
 const PRIO_FEE = 1000;
 
 export const mintBubblegumNft = async ({
+  umi,
   treeId,
   collection,
   filePath,
   onChainMetadata,
   offChainMetadata,
 }: {
+  umi: Umi;
   treeId: string;
-  collection: string;
+  collection?: string;
   filePath: string;
   onChainMetadata: {
     name: string;
@@ -44,14 +42,11 @@ export const mintBubblegumNft = async ({
     properties?: { [key: string]: unknown };
   };
 }) => {
-  dotenv.config();
-  const umi = createUmi(process.env.RPC_URL)
-    .use(mplCore())
-    .use(
-      filebaseUploader({
-        gateway: "https://ipfs.filebase.io/ipfs",
-      }),
-    );
+  umi.use(
+    filebaseUploader({
+      gateway: "https://ipfs.filebase.io/ipfs",
+    }),
+  );
 
   const fileBuffer = fs.readFileSync(filePath);
   const fileName = path.basename(filePath);
@@ -74,14 +69,9 @@ export const mintBubblegumNft = async ({
   };
   const jsonUrl = await umi.uploader.uploadJson(jsonMetadata);
 
-  const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
-  const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
-  umi.use(keypairIdentity(owner));
-
-  // const metadata = { ...onChainMetadata, collection: null, uri: jsonUrl };
   const metadata = {
     ...onChainMetadata,
-    collection: some(publicKey("DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY")),
+    collection: some(publicKey(collection)),
     uri: jsonUrl,
   };
 
