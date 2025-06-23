@@ -8,6 +8,15 @@ import { mintCoreCollection } from "../mint-core-collection";
 import { amountToNumber } from "@metaplex-foundation/umi";
 
 describe("createTree", () => {
+  
+  beforeAll(async () => {
+    dotenv.config();
+    const umi = createUmi(process.env.RPC_URL).use(mplCore());
+    const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
+    const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
+    umi.use(keypairIdentity(owner));
+  });
+
   it("should create a merkle tree", async () => {
     // minimum tree settings
     const merkleTree = await createTree({ maxDepth: 3, maxBufferSize: 8 });
