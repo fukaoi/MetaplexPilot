@@ -2,7 +2,7 @@ import { create } from "kubo-rpc-client";
 import { UmiPlugin, createGenericFile, Umi } from "@metaplex-foundation/umi";
 import { Buffer } from "buffer";
 import dotenv from "dotenv";
-
+import https from "https";
 dotenv.config();
 
 export type FilebaseUploaderOptions = {
@@ -28,9 +28,15 @@ function createFilebaseClient(options: FilebaseUploaderOptions): any {
     throw new Error("No Filebase token provided");
   }
 
+  const agent = new https.Agent({
+    keepAlive: true,
+    rejectUnauthorized: false, // ⚠️ only for dev/testing!
+  });
+
   return create({
     url: options.url || "https://rpc.filebase.io",
     headers: { Authorization: `Bearer ${token}` },
+    agent, // for self-signed certificate in certificate chain
   });
 }
 

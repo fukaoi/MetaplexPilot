@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
     "@metaplex-foundation/digital-asset-standard-api": "^2.0.0",

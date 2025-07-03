@@ -3,7 +3,7 @@ import bs from "bs58";
 import dotenv from "dotenv";
 import { expect, describe } from "@jest/globals";
 import { fetchAssets } from "../fetch-assets";
-import { mintBubblegumNft } from "../mint-bubblegum-nft";
+import { mintBubblegumV2Nft } from "../mint-bubblegumV2-nft";
 import { filebaseUploader } from "../filebase-uploader";
 import { mintCoreCollection } from "../mint-core-collection";
 import {
@@ -11,7 +11,7 @@ import {
   keypairIdentity,
   publicKey,
 } from "@metaplex-foundation/umi";
-import { burnBubblegumNft } from "../burn-bubblegum-nft";
+import { burnBubblegumV2Nft } from "../burn-bubblegumV2-nft";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
@@ -80,7 +80,7 @@ describe("createTree", () => {
       ],
     };
 
-    const response = await mintBubblegumNft({
+    const response = await mintBubblegumV2Nft({
       umi,
       treeId,
       filePath,
@@ -119,12 +119,15 @@ describe("createTree", () => {
     const rpcAssetList = await umi.rpc.searchAssets({
       owner: publicKey(process.env.PUBLIC_KEY),
       compressed: true,
-      burnt: false,
+      burnt: false, // disable burned nft
+      interface: "V2_NFT",
     });
     const items = rpcAssetList.items[0];
+    console.log(items);
     const assetId = items.id;
+    console.log("asset':", assetId);
 
-    const response = await burnBubblegumNft({
+    const response = await burnBubblegumV2Nft({
       umi,
       assetId,
       treeOwner: process.env.PUBLIC_KEY,

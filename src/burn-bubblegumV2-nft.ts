@@ -2,7 +2,7 @@ import { burnV2, getAssetWithProof } from "@metaplex-foundation/mpl-bubblegum";
 import { publicKey, Umi } from "@metaplex-foundation/umi";
 import bs from "bs58";
 
-export const burnBubblegumNft = async ({
+export const burnBubblegumV2Nft = async ({
   umi,
   assetId,
   collection,
@@ -13,10 +13,12 @@ export const burnBubblegumNft = async ({
   collection?: string;
   treeOwner: string;
 }) => {
-  const assetWithProof = await getAssetWithProof(umi, publicKey(assetId), {
-    truncateCanopy: true,
-  });
+  const assetWithProof = await getAssetWithProof(umi, publicKey(assetId));
   const coreCollection = collection ? publicKey(collection) : undefined;
+
+  if (assetWithProof.rpcAsset.interface !== "V2_NFT") {
+    throw Error("Invalid asset interface: Only V2_NFT");
+  }
 
   const response = await burnV2(umi, {
     ...assetWithProof,
