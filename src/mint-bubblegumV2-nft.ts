@@ -81,9 +81,7 @@ export const mintBubblegumV2Nft = async ({
     .add(
       mintV2(umi, {
         collectionAuthority: umi.identity,
-        coreCollection: publicKey(
-          "DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY",
-        ),
+        coreCollection: publicKey(collection),
         leafOwner: umi.identity.publicKey,
         merkleTree: publicKey(treeId),
         metadata,
