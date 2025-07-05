@@ -14,7 +14,6 @@ import {
   fetchTreeConfigFromSeeds,
   Version,
 } from "@metaplex-foundation/mpl-bubblegum";
-import { burnEditionNft } from "@metaplex-foundation/mpl-token-metadata";
 
 let umi: ReturnType<typeof createUmi>;
 const treeV2Id = "CTvwtHvQHDiDp1aWy8Rk4ThuzmC6jgZPFaFv2Qu82Yaa";
