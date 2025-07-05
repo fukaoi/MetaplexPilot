@@ -16,9 +16,9 @@ export const burnBubblegumV2Nft = async ({
   const assetWithProof = await getAssetWithProof(umi, publicKey(assetId));
   const coreCollection = collection ? publicKey(collection) : undefined;
 
-  if (assetWithProof.rpcAsset.interface !== "V2_NFT") {
-    throw Error("Invalid asset interface: Only V2_NFT");
-  }
+  // if (assetWithProof.rpcAsset.interface !== "V2_NFT") {
+  //    throw Error("Invalid asset interface: Only V2_NFT");
+  // }
 
   const response = await burnV2(umi, {
     ...assetWithProof,

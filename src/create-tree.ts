@@ -19,5 +19,6 @@ export const createTree = async ({
     maxDepth,
   });
 
-  return await builder.sendAndConfirm(umi);
+  await builder.sendAndConfirm(umi);
+  return merkleTree.publicKey.toString();
 };

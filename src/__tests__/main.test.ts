@@ -2,25 +2,25 @@ import { createTree } from "../create-tree";
 import bs from "bs58";
 import dotenv from "dotenv";
 import { expect, describe } from "@jest/globals";
-import { fetchAssets } from "../fetch-assets";
 import { mintBubblegumV2Nft } from "../mint-bubblegumV2-nft";
 import { filebaseUploader } from "../filebase-uploader";
 import { mintCoreCollection } from "../mint-core-collection";
-import {
-  amountToNumber,
-  keypairIdentity,
-  publicKey,
-} from "@metaplex-foundation/umi";
+import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
 import { burnBubblegumV2Nft } from "../burn-bubblegumV2-nft";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
+import {
+  fetchTreeConfigFromSeeds,
+  Version,
+} from "@metaplex-foundation/mpl-bubblegum";
+import { burnEditionNft } from "@metaplex-foundation/mpl-token-metadata";
 
 let umi: ReturnType<typeof createUmi>;
-const treeId = "5uNBcLcmjzimdYo7WfVKbpmfJzbVAUKkKeaZH4NJSoTG";
+const treeV2Id = "CTvwtHvQHDiDp1aWy8Rk4ThuzmC6jgZPFaFv2Qu82Yaa";
 const collection = "DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY";
 
-describe("createTree", () => {
+describe("Metaplex Pilots", () => {
   beforeAll(async () => {
     dotenv.config();
     umi = createUmi(process.env.RPC_URL).use(mplCore());
@@ -32,28 +32,25 @@ describe("createTree", () => {
 
   it("should create a merkle tree", async () => {
     // minimum tree settings
-    const merkleTree = await createTree({ umi, maxDepth: 3, maxBufferSize: 8 });
+    const merkleTree = await createTree({
+      umi,
+      maxDepth: 3,
+      maxBufferSize: 8,
+    });
     expect(merkleTree).toBeDefined();
-    console.log("# sig: ", bs.encode(merkleTree.signature));
+    console.log("# treeId: ", merkleTree);
   });
 
-  it("load filebaseUploader", async () => {
+  it("Verify filebaseUploader", async () => {
     const response = filebaseUploader();
     expect(response).toBeDefined();
   });
 
-  it("fetch asset datas", async () => {
-    const assetIds = [
-      "651KHcodYkx8s2wFoHzZhL1TMfHa8WL1baBX6y4s5b3J",
-      "6qrkGBuHKdGY2P1bAyV6BehC3byjkku7oCYgfwJuMe7u",
-      "9h1Tz6M4G2PTCqAeg8j22rn1BHjknHymY9reZmwig12M",
-    ];
-    const response = await fetchAssets(assetIds);
-    expect(response).toBeDefined();
-    console.log(
-      "# metadata: ",
-      response.map((data: any) => data.content.metadata),
-    );
+  it("Verify tree version", async () => {
+    const treeConfig = await fetchTreeConfigFromSeeds(umi, {
+      merkleTree: publicKey(treeV2Id),
+    });
+    expect(treeConfig.version).toBe(Version.V2);
   });
 
   it("should mint bubblegum nft", async () => {
@@ -82,7 +79,7 @@ describe("createTree", () => {
 
     const response = await mintBubblegumV2Nft({
       umi,
-      treeId,
+      treeId: treeV2Id,
       filePath,
       collection,
       onChainMetadata,
@@ -115,15 +112,35 @@ describe("createTree", () => {
     console.log("# collection: ", response);
   });
 
+  it("Verify core collection", async () => {
+    const asset = await umi.rpc.getAsset(publicKey(collection));
+    expect(asset.interface).toBe("MplCoreCollection");
+    const children = await umi.rpc.getAssetsByGroup({
+      groupKey: "collection",
+      groupValue: collection,
+    });
+
+    const collections = children.items.map((item) => {
+      return {
+        assetId: item.id,
+        interface: item.interface,
+        compression: item.compression.compressed,
+        burned: item.burnt,
+      };
+    });
+    console.log("# collections: ", collections);
+  });
+
   it("burn bubblegum nft", async () => {
     const rpcAssetList = await umi.rpc.searchAssets({
       owner: publicKey(process.env.PUBLIC_KEY),
+      grouping: ["collection", collection],
       compressed: true,
       burnt: false, // disable burned nft
-      interface: "V2_NFT",
     });
+    console.log("# asset list: ", rpcAssetList.items);
+    expect(rpcAssetList.items.length).toBeGreaterThan(0);
     const items = rpcAssetList.items[0];
-    console.log(items);
     const assetId = items.id;
     console.log("asset':", assetId);
 
