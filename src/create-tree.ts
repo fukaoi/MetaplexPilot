@@ -3,18 +3,21 @@ import { createTreeV2 } from "@metaplex-foundation/mpl-bubblegum";
 
 export const createTree = async ({
   umi,
-  maxBufferSize,
   maxDepth,
+  maxBufferSize,
+  canopyDepth,
 }: {
   umi: Umi;
-  maxBufferSize: number;
   maxDepth: number;
+  maxBufferSize: number;
+  canopyDepth?: number;
 }) => {
   const merkleTree = generateSigner(umi);
   const builder = await createTreeV2(umi, {
     merkleTree,
-    maxBufferSize,
     maxDepth,
+    maxBufferSize,
+    canopyDepth,
   });
 
   await builder.sendAndConfirm(umi);
