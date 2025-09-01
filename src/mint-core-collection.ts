@@ -6,8 +6,8 @@ import {
   Umi,
 } from "@metaplex-foundation/umi";
 import { filebaseUploader } from "./filebase-uploader";
-import fs from "node:fs";
-import path from "node:path";
+import fs from "fs";
+import path from "path";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 import {
   setComputeUnitLimit,
