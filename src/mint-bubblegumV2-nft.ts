@@ -50,10 +50,39 @@ export const mintBubblegumV2Nft = async ({
 
   const fileBuffer = fs.readFileSync(filePath);
   const fileName = path.basename(filePath);
+  const fileExtension = path.extname(fileName).toLowerCase();
+
+  // Determine content type based on file extension
+  let contentType = "application/octet-stream"; // default
+  switch (fileExtension) {
+    case ".mp4":
+      contentType = "video/mp4";
+      break;
+    case ".jpg":
+    case ".jpeg":
+      contentType = "image/jpeg";
+      break;
+    case ".png":
+      contentType = "image/png";
+      break;
+    case ".gif":
+      contentType = "image/gif";
+      break;
+    case ".webp":
+      contentType = "image/webp";
+      break;
+    case ".mov":
+      contentType = "video/quicktime";
+      break;
+    case ".avi":
+      contentType = "video/x-msvideo";
+      break;
+  }
+
   const fileToUpload = createGenericFile(fileBuffer, fileName, {
     displayName: fileName,
     uniqueName: fileName,
-    contentType: "application/octet-stream",
+    contentType,
     tags: [],
   });
 
