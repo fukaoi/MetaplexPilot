@@ -25,6 +25,7 @@ export const mintBubblegumV2Nft = async ({
   filePath,
   onChainMetadata,
   offChainMetadata,
+  nftOwner,
 }: {
   umi: Umi;
   treeId: string;
@@ -41,6 +42,7 @@ export const mintBubblegumV2Nft = async ({
     attributes?: any[];
     properties?: { [key: string]: unknown };
   };
+  nftOwner?: string;
 }) => {
   umi.use(
     filebaseUploader({
@@ -111,7 +113,7 @@ export const mintBubblegumV2Nft = async ({
       mintV2(umi, {
         collectionAuthority: umi.identity,
         coreCollection: publicKey(collection),
-        leafOwner: umi.identity.publicKey,
+        leafOwner: nftOwner ? publicKey(nftOwner) : umi.identity.publicKey,
         merkleTree: publicKey(treeId),
         metadata,
       }),
