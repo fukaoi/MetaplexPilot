@@ -88,6 +88,43 @@ describe("Metaplex Pilots", () => {
     console.log("# assetId: ", response);
   });
 
+  it("should mint bubblegum nft with nftOwner", async () => {
+    const filePath = "./assets/hokke.jpeg";
+    const nftOwner = "AUTkDncnqABKGgZkxVH6CCcZda2BUhEcYKF8AK4kr2VS";
+    const onChainMetadata = {
+      name: "CouponNFT",
+      symbol: "CPN",
+      uri: "",
+      sellerFeeBasisPoints: 0,
+      creators: [],
+    };
+    const offChainMetadata = {
+      description: "This is a coupon NFT",
+      attributes: [
+        {
+          trait_type: "Color",
+          value: "Clear Yellow",
+        },
+        {
+          trait_type: "Eye",
+          value: "Orange",
+        },
+        { trait_type: "Sticker", value: "Galaxy Blue" },
+      ],
+    };
+
+    const response = await mintBubblegumV2Nft({
+      umi,
+      treeId: treeV2Id,
+      filePath,
+      collection,
+      onChainMetadata,
+      offChainMetadata,
+      nftOwner,
+    });
+    expect(response).toBeDefined();
+    console.log("# assetId: ", response);
+  });
   it("should mint core collection", async () => {
     const filePath = "./assets/coupon.png";
     const onChainMetadata = {
