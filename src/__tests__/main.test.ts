@@ -13,6 +13,7 @@ import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
 import {
   fetchTreeConfigFromSeeds,
   Version,
+  mplBubblegum,
 } from "@metaplex-foundation/mpl-bubblegum";
 
 let umi: ReturnType<typeof createUmi>;
@@ -22,11 +23,13 @@ const collection = "DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY";
 describe("Metaplex Pilots", () => {
   beforeAll(async () => {
     dotenv.config();
-    umi = createUmi(process.env.RPC_URL).use(mplCore());
+    umi = createUmi(process.env.RPC_URL)
+      .use(mplCore())
+      .use(mplBubblegum())
+      .use(dasApi());
     const secretKeyBytes = bs.decode(process.env.SECRET_KEY);
     const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
     umi.use(keypairIdentity(owner));
-    umi.use(dasApi());
   });
 
   it("should create a merkle tree", async () => {
@@ -183,7 +186,7 @@ describe("Metaplex Pilots", () => {
     const response = await burnBubblegumV2Nft({
       umi,
       assetId,
-      treeOwner: process.env.PUBLIC_KEY,
+      leafOwner: process.env.PUBLIC_KEY,
       collection,
     });
     expect(response).toBeDefined();
