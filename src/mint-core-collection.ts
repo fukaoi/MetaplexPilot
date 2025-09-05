@@ -4,11 +4,11 @@ import {
   generateSigner,
   transactionBuilder,
   Umi,
+  publicKey,
 } from "@metaplex-foundation/umi";
 import { filebaseUploader } from "./filebase-uploader";
 import fs from "fs";
 import path from "path";
-import { base58 } from "@metaplex-foundation/umi/serializers";
 import {
   setComputeUnitLimit,
   setComputeUnitPrice,
@@ -23,6 +23,7 @@ export const mintCoreCollection = async ({
   filePath,
   onChainMetadata,
   offChainMetadata,
+  burnDelegate,
 }: {
   umi: Umi;
   filePath: string;
@@ -35,6 +36,7 @@ export const mintCoreCollection = async ({
     attributes?: any[];
     properties?: { [key: string]: unknown };
   };
+  burnDelegate?: string;
 }) => {
   dotenv.config();
   umi.use(
@@ -72,7 +74,13 @@ export const mintCoreCollection = async ({
         collection,
         name: onChainMetadata.name,
         uri: jsonUrl,
-        plugins: [{ type: "BubblegumV2" }],
+        plugins: [
+          { type: "BubblegumV2" },
+          {
+            type: "PermanentBurnDelegate",
+            authority: { type: "Address", address: publicKey(burnDelegate) },
+          },
+        ],
       }),
     );
 

@@ -17,8 +17,9 @@ import {
 } from "@metaplex-foundation/mpl-bubblegum";
 
 let umi: ReturnType<typeof createUmi>;
-const treeV2Id = "CTvwtHvQHDiDp1aWy8Rk4ThuzmC6jgZPFaFv2Qu82Yaa";
-const collection = "DWLXzmL1iN8SEeUaqZbauGZHN4ivAqk3Wogpm1Lv1XmY";
+const treeV2Id = "HCH4v16CEfy3XVLagxvwumAoHihCW6fpDhuHCbMYqFq";
+const collection = "3Kfop5ZnaRiKWUFr4P8QnZKoD3ihAdSKydpCQo4mZMAU";
+const nftOwner = "EGAUwRAvNpzRUEtJRrKu92kQFAgyu3fuwM5tQCCTs9LN";
 
 describe("Metaplex Pilots", () => {
   beforeAll(async () => {
@@ -93,10 +94,9 @@ describe("Metaplex Pilots", () => {
 
   it("should mint bubblegum nft with nftOwner", async () => {
     const filePath = "./assets/hokke.jpeg";
-    const nftOwner = "AUTkDncnqABKGgZkxVH6CCcZda2BUhEcYKF8AK4kr2VS";
     const onChainMetadata = {
       name: "CouponNFT",
-      symbol: "CPN",
+      symbol: "WNO",
       uri: "",
       sellerFeeBasisPoints: 0,
       creators: [],
@@ -123,11 +123,12 @@ describe("Metaplex Pilots", () => {
       collection,
       onChainMetadata,
       offChainMetadata,
-      nftOwner,
+      nftOwner: nftOwner,
     });
     expect(response).toBeDefined();
     console.log("# assetId: ", response);
   });
+
   it("should mint core collection", async () => {
     const filePath = "./assets/coupon.png";
     const onChainMetadata = {
@@ -146,6 +147,7 @@ describe("Metaplex Pilots", () => {
       filePath,
       onChainMetadata,
       offChainMetadata,
+      burnDelegate: umi.payer.publicKey,
     });
     expect(response).toBeDefined();
     console.log("# collection: ", response);
@@ -186,8 +188,34 @@ describe("Metaplex Pilots", () => {
     const response = await burnBubblegumV2Nft({
       umi,
       assetId,
-      leafOwner: process.env.PUBLIC_KEY,
+      leafOwner: nftOwner,
       collection,
+      authority: umi.identity, // Use umi.identity as the permanent burn delegate
+    });
+    expect(response).toBeDefined();
+    console.log("# signature: ", response);
+  });
+
+  it("burn bubblegum nft with nftOwner", async () => {
+    const rpcAssetList = await umi.rpc.searchAssets({
+      owner: publicKey(nftOwner),
+      grouping: ["collection", collection],
+      compressed: true,
+      burnt: false, // disable burned nft
+    });
+    console.log("# asset list: ", rpcAssetList.items);
+    expect(rpcAssetList.items.length).toBeGreaterThan(0);
+    const items = rpcAssetList.items[0];
+    // const assetId = items.id;
+    const assetId = "Cbc7WoBRgnxhR6jamvoTLb8rmrQDZEniHYncz6YUAVxC";
+    console.log("asset':", assetId);
+
+    const response = await burnBubblegumV2Nft({
+      umi,
+      assetId,
+      leafOwner: nftOwner,
+      collection,
+      authority: umi.identity, // Use umi.identity as the permanent burn delegate
     });
     expect(response).toBeDefined();
     console.log("# signature: ", response);
