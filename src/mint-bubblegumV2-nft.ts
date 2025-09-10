@@ -92,17 +92,17 @@ export const mintBubblegumV2Nft = async ({
   const jsonMetadata = {
     name: onChainMetadata.name,
     symbol: onChainMetadata.symbol,
-    description: offChainMetadata.description,
+    description: offChainMetadata?.description || "",
     image: imageUrl,
-    attributes: offChainMetadata.attributes || [],
-    properties: offChainMetadata.properties || [],
+    attributes: offChainMetadata?.attributes || [],
+    properties: offChainMetadata?.properties || [],
     seller_fee_basis_points: onChainMetadata.sellerFeeBasisPoints,
   };
   const jsonUrl = await umi.uploader.uploadJson(jsonMetadata);
 
   const metadata = {
     ...onChainMetadata,
-    collection: some(publicKey(collection)),
+    collection: collection ? some(publicKey(collection)) : null,
     uri: jsonUrl,
   };
 
@@ -112,7 +112,7 @@ export const mintBubblegumV2Nft = async ({
     .add(
       mintV2(umi, {
         collectionAuthority: umi.identity,
-        coreCollection: publicKey(collection),
+        coreCollection: collection ? publicKey(collection) : undefined,
         leafOwner: nftOwner ? publicKey(nftOwner) : umi.identity.publicKey,
         payer: umi.identity,
         merkleTree: publicKey(treeId),

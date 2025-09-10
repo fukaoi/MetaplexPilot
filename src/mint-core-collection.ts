@@ -58,13 +58,22 @@ export const mintCoreCollection = async ({
   const jsonMetadata = {
     name: onChainMetadata.name,
     symbol: onChainMetadata.symbol,
-    description: offChainMetadata.description,
+    description: offChainMetadata?.description || "",
     image: imageUrl,
-    attributes: offChainMetadata.attributes || [],
-    properties: offChainMetadata.properties || [],
+    attributes: offChainMetadata?.attributes || [],
+    properties: offChainMetadata?.properties || [],
   };
   const jsonUrl = await umi.uploader.uploadJson(jsonMetadata);
   const collection = generateSigner(umi);
+
+  const plugins: any[] = [{ type: "BubblegumV2" as const }];
+
+  if (burnDelegate) {
+    plugins.push({
+      type: "PermanentBurnDelegate" as const,
+      authority: { type: "Address" as const, address: publicKey(burnDelegate) },
+    });
+  }
 
   const tx = transactionBuilder()
     .add(setComputeUnitLimit(umi, { units: CU_LIMIT }))
@@ -74,13 +83,7 @@ export const mintCoreCollection = async ({
         collection,
         name: onChainMetadata.name,
         uri: jsonUrl,
-        plugins: [
-          { type: "BubblegumV2" },
-          {
-            type: "PermanentBurnDelegate",
-            authority: { type: "Address", address: publicKey(burnDelegate) },
-          },
-        ],
+        plugins,
       }),
     );
 

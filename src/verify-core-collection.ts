@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 (async () => {
   dotenv.config();
-  const umi = createUmi(process.env.RPC_URL).use(mplCore());
+  const umi = createUmi(process.env.RPC_URL!).use(mplCore());
 
   const collectionPk = publicKey(
     "8Wf4oHjf1CV1UBzFsJ6F9ETqRmx4WAqJzariyAAVxX9h",
