@@ -15,7 +15,10 @@ export const burnBubblegumV2Nft = async ({
   leafOwner: string | PublicKey;
   authority?: Signer;
 }) => {
-  const assetWithProof = await getAssetWithProof(umi, publicKey(assetId));
+  const assetWithProof = await getAssetWithProof(
+    umi as any,
+    publicKey(assetId),
+  );
 
   const response = await burnV2(umi, {
     ...assetWithProof,
