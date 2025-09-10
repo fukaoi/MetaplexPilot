@@ -28,11 +28,7 @@ describe("Metaplex Pilots", () => {
       .use(mplCore())
       .use(mplBubblegum())
       .use(dasApi());
-<<<<<<< HEAD
     const secretKeyBytes = bs.decode(process.env.SECRET_KEY!);
-=======
-    const secretKeyBytes = bs.decode(process.env.FEE_PAYER_SECRET_KEY);
->>>>>>> 6665c61e0af91b8f49c1cbf82e69d4918071c0ae
     const owner = umi.eddsa.createKeypairFromSecretKey(secretKeyBytes);
     umi.use(keypairIdentity(owner));
   });
@@ -178,7 +174,7 @@ describe("Metaplex Pilots", () => {
 
   it("burn bubblegum nft", async () => {
     const rpcAssetList = await umi.rpc.searchAssets({
-      owner: publicKey(process.env.PUBLIC_KEY),
+      owner: publicKey(process.env.PUBLIC_KEY!),
       grouping: ["collection", collection],
       compressed: true,
       burnt: false, // disable burned nft
