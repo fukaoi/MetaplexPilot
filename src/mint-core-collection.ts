@@ -47,7 +47,7 @@ export const mintCoreCollection = async ({
 
   const fileBuffer = fs.readFileSync(filePath);
   const fileName = path.basename(filePath);
-  const fileToUpload = createGenericFile(fileBuffer, fileName, {
+  const fileToUpload = createGenericFile(new Uint8Array(fileBuffer), fileName, {
     displayName: fileName,
     uniqueName: fileName,
     contentType: "application/octet-stream",

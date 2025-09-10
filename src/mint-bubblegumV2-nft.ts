@@ -81,7 +81,7 @@ export const mintBubblegumV2Nft = async ({
       break;
   }
 
-  const fileToUpload = createGenericFile(fileBuffer, fileName, {
+  const fileToUpload = createGenericFile(new Uint8Array(fileBuffer), fileName, {
     displayName: fileName,
     uniqueName: fileName,
     contentType,

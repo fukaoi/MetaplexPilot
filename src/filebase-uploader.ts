@@ -65,7 +65,7 @@ function createFilebaseUploader(
 
   const uploadJson = async (json: any) => {
     const buffer = Buffer.from(JSON.stringify(json));
-    const file = createGenericFile(buffer, "metadata.json", {
+    const file = createGenericFile(new Uint8Array(buffer), "metadata.json", {
       contentType: "application/json",
     });
     const [uri] = await upload([file]);
