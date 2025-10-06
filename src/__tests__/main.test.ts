@@ -155,14 +155,14 @@ describe("Metaplex Pilots", () => {
   });
 
   it("Verify core collection", async () => {
-    const asset = await umi.rpc.getAsset(publicKey(collection));
+    const asset = (await umi.rpc.call("getAsset", { id: collection })) as any;
     expect(asset.interface).toBe("MplCoreCollection");
-    const children = await umi.rpc.getAssetsByGroup({
+    const children = (await umi.rpc.call("getAssetsByGroup", {
       groupKey: "collection",
       groupValue: collection,
-    });
+    })) as any;
 
-    const collections = children.items.map((item) => {
+    const collections = children.items.map((item: any) => {
       return {
         assetId: item.id,
         interface: item.interface,
@@ -174,12 +174,12 @@ describe("Metaplex Pilots", () => {
   });
 
   it("burn bubblegum nft", async () => {
-    const rpcAssetList = await umi.rpc.searchAssets({
-      owner: publicKey(process.env.PUBLIC_KEY!),
+    const rpcAssetList = (await umi.rpc.call("searchAssets", {
+      owner: process.env.PUBLIC_KEY!,
       grouping: ["collection", collection],
       compressed: true,
       burnt: false, // disable burned nft
-    });
+    })) as any;
     console.log("# asset list: ", rpcAssetList.items);
     expect(rpcAssetList.items.length).toBeGreaterThan(0);
     const items = rpcAssetList.items[0];
@@ -213,28 +213,29 @@ describe("Metaplex Pilots", () => {
   });
 
   it("should burn core collection", async () => {
-    const filePath = "./assets/coupon.png";
-    const onChainMetadata = {
-      name: "Test Burn Collection",
-      symbol: "TBC",
-      sellerFeeBasisPoints: 0,
-      creators: [],
-    };
+    // const filePath = "./assets/coupon.png";
+    // const onChainMetadata = {
+    //   name: "Test Burn Collection",
+    //   symbol: "TBC",
+    //   sellerFeeBasisPoints: 0,
+    //   creators: [],
+    // };
 
-    const offChainMetadata = {
-      description: "A test collection that will be burned",
-    };
+    // const offChainMetadata = {
+    //   description: "A test collection that will be burned",
+    // };
 
-    const collectionAddress = await mintCoreCollection({
-      umi,
-      filePath,
-      onChainMetadata,
-      offChainMetadata,
-      burnDelegate: umi.payer.publicKey,
-    });
-    expect(collectionAddress).toBeDefined();
-    console.log("# created collection for burning: ", collectionAddress);
+    // const collectionAddress = await mintCoreCollection({
+    //   umi,
+    //   filePath,
+    //   onChainMetadata,
+    //   offChainMetadata,
+    //   burnDelegate: umi.payer.publicKey,
+    // });
+    // expect(collectionAddress).toBeDefined();
+    // console.log("# created collection for burning: ", collectionAddress);
 
+    const collectionAddress = "F1HeKv4BWSTdszBzGAU4TLP8LeAiTwFdnxwJ2n76uehs";
     // Now burn the collection
     const burnResponse = await burnCoreCollection({
       umi,

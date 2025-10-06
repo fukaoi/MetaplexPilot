@@ -5,6 +5,11 @@ const config: Config = {
   testEnvironment: "node",
   testTimeout: 30_000, //30sec
   extensionsToTreatAsEsm: [".ts"],
+  globals: {
+    "ts-jest": {
+      useESM: true,
+    },
+  },
   transform: {
     "^.+\\.tsx?$": [
       "ts-jest",
@@ -13,6 +18,12 @@ const config: Config = {
       },
     ],
   },
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  },
+  transformIgnorePatterns: [
+    "node_modules/(?!(kubo-rpc-client|@metaplex-foundation)/)",
+  ],
   roots: ["<rootDir>/src"],
 };
 

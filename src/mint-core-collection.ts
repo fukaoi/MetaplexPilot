@@ -37,7 +37,7 @@ export const mintCoreCollection = async ({
     properties?: { [key: string]: unknown };
   };
   burnDelegate?: string;
-}) => {
+}): Promise<string> => {
   dotenv.config();
   umi.use(
     filebaseUploader({
