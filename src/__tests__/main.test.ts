@@ -7,6 +7,7 @@ import { filebaseUploader } from "../filebase-uploader";
 import { mintCoreCollection } from "../mint-core-collection";
 import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
 import { burnBubblegumV2Nft } from "../burn-bubblegumV2-nft";
+import { burnCoreCollection } from "../burn-core-collection";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api";
@@ -209,5 +210,38 @@ describe("Metaplex Pilots", () => {
     });
     expect(response).toBeDefined();
     console.log("# signature: ", response);
+  });
+
+  it("should burn core collection", async () => {
+    const filePath = "./assets/coupon.png";
+    const onChainMetadata = {
+      name: "Test Burn Collection",
+      symbol: "TBC",
+      sellerFeeBasisPoints: 0,
+      creators: [],
+    };
+
+    const offChainMetadata = {
+      description: "A test collection that will be burned",
+    };
+
+    const collectionAddress = await mintCoreCollection({
+      umi,
+      filePath,
+      onChainMetadata,
+      offChainMetadata,
+      burnDelegate: umi.payer.publicKey,
+    });
+    expect(collectionAddress).toBeDefined();
+    console.log("# created collection for burning: ", collectionAddress);
+
+    // Now burn the collection
+    const burnResponse = await burnCoreCollection({
+      umi,
+      collection: collectionAddress,
+      authority: umi.identity,
+    });
+    expect(burnResponse).toBeDefined();
+    console.log("# burn collection signature: ", burnResponse);
   });
 });
