@@ -18,7 +18,7 @@ import {
 const CU_LIMIT = 200_000;
 const PRIO_FEE = 1000;
 
-export const mintBubblegumV2Nft = async ({
+export const mintBubblegumV1Nft = async ({
   umi,
   treeId,
   collection,
