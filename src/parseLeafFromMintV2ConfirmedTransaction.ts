@@ -35,9 +35,24 @@ export async function parseLeafFromMintV2ConfirmedTransaction(
   context: Pick<Context, "programs" | "eddsa" | "rpc">,
   signature: TransactionSignature,
 ): Promise<LeafSchema> {
-  const transaction = await context.rpc.getTransaction(signature, {
-    commitment: "confirmed",
-  });
+  const MAX_ATTEMPTS = 5;
+  const SLEEP_MS = 300;
+  const sleep = (ms: number) =>
+    new Promise<void>((resolve) => setTimeout(resolve, ms));
+  let transaction = null;
+
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
+    const commitment = attempt === MAX_ATTEMPTS - 1 ? "finalized" : "confirmed";
+    transaction = await context.rpc.getTransaction(signature, {
+      commitment,
+    });
+    if (transaction) {
+      break;
+    }
+
+    const backoffMs = SLEEP_MS * (attempt + 2);
+    await sleep(backoffMs);
+  }
   if (!transaction) {
     throw new Error("Could not get transaction from signature");
   }
