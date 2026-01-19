@@ -2,7 +2,7 @@ import { createTree } from "../create-tree";
 import bs from "bs58";
 import dotenv from "dotenv";
 import { expect, describe } from "@jest/globals";
-import { mintBubblegumV1Nft } from "../mint-bubblegumV2-nft";
+import { mintBubblegumV2Nft } from "../mint-bubblegumV2-nft";
 import { filebaseUploader } from "../filebase-uploader";
 import { mintCoreCollection } from "../mint-core-collection";
 import { keypairIdentity, publicKey } from "@metaplex-foundation/umi";
@@ -81,7 +81,7 @@ describe("Metaplex Pilots", () => {
       ],
     };
 
-    const response = await mintBubblegumV1Nft({
+    const response = await mintBubblegumV2Nft({
       umi,
       treeId: treeV2Id,
       filePath,
@@ -117,7 +117,7 @@ describe("Metaplex Pilots", () => {
       ],
     };
 
-    const response = await mintBubblegumV1Nft({
+    const response = await mintBubblegumV2Nft({
       umi,
       treeId: treeV2Id,
       filePath,
